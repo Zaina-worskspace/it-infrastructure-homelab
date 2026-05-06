@@ -1,14 +1,14 @@
 ## Company profile
 
 **Company name:** EVO — a small 10 person law firm. 
-### Departments:
+#### Departments:
 **Legal team (6 people):**
-paralegals and lawyers: They handle client files and need access to the shared file server. No have admin rights on their machines.
-**IT/Admin (2 people):**
+paralegals and lawyers: They handle client files and need access to the shared file server. No have admin rights on their machines. 
+ **IT/Admin (2 people):**
 They manage all systems and have full administrative access.
 **Management (2 people, including CEO):**
 They have access to all file shares. The work is laptop-based, sometimes it's done remotely.
-### Business requirements:
+#### Business requirements:
 - Employees need a shared internal file storage system for case documents
 - The company has a public website (hosted internally in the lab)
 - Two employees work remotely and need secure access (VPN)
@@ -17,6 +17,15 @@ They have access to all file shares. The work is laptop-based, sometimes it's do
 
 
 ## Network zones
+## Zone isolation rationale
+| Zone interaction | Rule | Why |
+|---|---|---|
+| Internet → DMZ | Allowed on ports 80/443 only | Web server needs to be publicly reachable |
+| DMZ → Internal LAN | Blocked entirely | Compromised web server cannot reach company data |
+| LAN → Internet | Allowed (outbound only) | Employees need internet access |
+| Monitoring zone | Receives logs from all zones, no inbound connections | Attacker cannot tamper with logs even if they compromise LAN |
+| VPN users → LAN | Allowed after authentication | Remote employees need internal access securely |
+
 ### Zone 0 — The Firewall 
 The firewall (pfSense) that sits between all zones and the internet. It has one virtual network interface per zone (four interfaces). It routes traffic between zones according the rules I set.
 
@@ -40,6 +49,15 @@ Where the security monitoring tools are. It can receive logs from all other zone
 Devices here:
 - Wazuh SIEM: 192.168.30.10
 
+
+## Design decisions log
+| Decision | Rationale |
+|---|---|
+| Web server placed in DMZ | Isolates public-facing service from internal LAN |
+| Monitoring zone separate from LAN | Prevents attackers from tampering with logs |
+| Static IPs for all servers | Ensures firewall rules based on IP stay reliable |
+| Ubuntu Server for file/web/SIEM | Lightweight and industry-common for server roles |
+| Windows Server for AD | Active Directory is Windows-native, closest to real enterprise |
 
 
 
