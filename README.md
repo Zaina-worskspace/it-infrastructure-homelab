@@ -10,6 +10,9 @@ Active Directory, security hardening, VPN, and SIEM deployment.
 **Industry:** Small legal firm
 **Size:** 10 employees, 3 departments  
 
+## Network topology
+![Network Topology](diagrams/network-topology.png)
+
 ## Architecture summary
 [Leave blank for now — you'll fill this in after the diagram]
 
